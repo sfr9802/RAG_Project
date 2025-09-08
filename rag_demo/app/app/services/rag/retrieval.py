@@ -18,6 +18,11 @@ def retrieve_docs(
     lam: float = 0.5,
     strategy: str = "baseline",
 ) -> List[Dict[str, Any]]:
+    """Return documents retrieved by the named strategy.
+
+    Parameters mirror those accepted by each strategy's ``retrieve`` method.
+    """
+
     strat = STRATEGIES.get(strategy)
     if not strat:
         raise ValueError(f"unknown strategy: {strategy}")
