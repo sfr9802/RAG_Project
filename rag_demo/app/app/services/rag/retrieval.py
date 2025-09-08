@@ -9,6 +9,9 @@ from .strategies import BaselineStrategy, ChromaOnlyStrategy, RetrievalStrategy
 _STRATEGIES: Dict[str, RetrievalStrategy] = {
     "baseline": BaselineStrategy(),
     "chroma_only": ChromaOnlyStrategy(),
+    # ``multiq`` kept for backwards compatibility with older callers that
+    # expected a multi-query expansion strategy. It currently mirrors the
+    # ``chroma_only`` behaviour which performs the expansion internally.
     "multiq": ChromaOnlyStrategy(),
 }
 
@@ -38,4 +41,38 @@ def retrieve_docs(
     )
 
 
-__all__ = ["retrieve_docs"]
+def retrieve(
+    self,
+    q: str,
+    *,
+    k: int = 6,
+    where: Optional[Dict[str, Any]] = None,
+    candidate_k: Optional[int] = None,
+    use_mmr: bool = True,
+    lam: float = 0.5,
+    strategy: str = "baseline",
+) -> Dict[str, Any]:
+    """Compatibility wrapper returning a structured payload.
+
+    The original monolithic service exposed a ``retrieve`` function that
+    returned a dictionary with metadata alongside the retrieved items.  The
+    modern service dispatches to strategy objects and returns a bare list of
+    document dictionaries.  To ease the transition for any callers still
+    relying on the old return shape we keep a thin wrapper that packages the
+    list into a dict.
+    """
+
+    items = retrieve_docs(
+        self,
+        q,
+        k=k,
+        where=where,
+        candidate_k=candidate_k,
+        use_mmr=use_mmr,
+        lam=lam,
+        strategy=strategy,
+    )
+    return {"q": q, "k": k, "where": where, "items": items}
+
+
+__all__ = ["retrieve_docs", "retrieve"]
