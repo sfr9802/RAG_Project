@@ -4,16 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from .strategies import BaselineStrategy, ChromaOnlyStrategy, RetrievalStrategy
-
-_STRATEGIES: Dict[str, RetrievalStrategy] = {
-    "baseline": BaselineStrategy(),
-    "chroma_only": ChromaOnlyStrategy(),
-    # ``multiq`` kept for backwards compatibility with older callers that
-    # expected a multi-query expansion strategy. It currently mirrors the
-    # ``chroma_only`` behaviour which performs the expansion internally.
-    "multiq": ChromaOnlyStrategy(),
-}
+from .strategies import STRATEGIES
 
 
 def retrieve_docs(
@@ -27,7 +18,7 @@ def retrieve_docs(
     lam: float = 0.5,
     strategy: str = "baseline",
 ) -> List[Dict[str, Any]]:
-    strat = _STRATEGIES.get(strategy)
+    strat = STRATEGIES.get(strategy)
     if not strat:
         raise ValueError(f"unknown strategy: {strategy}")
     return strat.retrieve(
