@@ -28,6 +28,14 @@ export default function ChatInput({ onSend, disabled = false }: Props) {
         placeholder="질문을 입력하세요..."
         disabled={disabled} // 입력 자체 비활성화
       />
+      <button
+        type="button"
+        onClick={handleSubmit}
+        disabled={disabled}
+        className="send-btn button-lala"
+      >
+        보내기
+      </button>
     </div>
   );
 }
