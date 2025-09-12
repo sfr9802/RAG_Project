@@ -3,6 +3,7 @@ package com.arin.auth.config;
 import com.arin.auth.jwt.JwtBlacklistFilter;
 import com.arin.auth.oauth.CustomOAuth2SuccessHandler;
 import com.arin.auth.oauth.CustomOAuth2UserService;
+import com.arin.auth.config.AppOAuthProps;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
     private final JwtBlacklistFilter jwtBlacklistFilter;
+    private final AppOAuthProps appOAuthProps;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -115,8 +117,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowCredentials(true);
-        // 개발은 정확히 프론트 오리진만 허용 (와일드카드 금지)
-        cfg.addAllowedOrigin("http://localhost:5173");
+        // 설정에 정의된 오리진만 허용
+        appOAuthProps.getAllowedOrigins().forEach(cfg::addAllowedOrigin);
 
         // 메서드/헤더는 넉넉히
         cfg.addAllowedMethod(CorsConfiguration.ALL);

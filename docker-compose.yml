@@ -32,6 +32,21 @@ services:
     ports: ["${REDIS_PORT}:6379"]
     volumes: [ "redis-data:/data" ]
 
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports: ["${MYSQL_PORT}:3306"]
+    volumes: ["mysql-data:/var/lib/mysql"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
   mongo:
     image: mongo:7
     environment:
@@ -59,7 +74,9 @@ services:
       llm: { condition: service_healthy }
       mongo: { condition: service_healthy }
       redis: { condition: service_started }
+      mysql: { condition: service_healthy }
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       # JwtCryptoConfig / JwtProvider 에 들어가는 값들(RELAXED BINDING)
       JWT_SECRET: ${JWT_SECRET}
       JWT_SECRET_IS_BASE64: ${JWT_SECRET_B64}
@@ -129,3 +146,4 @@ volumes:
   redis-data:
   chroma-data:
   hf-cache:
+  mysql-data:
