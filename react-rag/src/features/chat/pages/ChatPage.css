@@ -1,10 +1,16 @@
+
 .chat-container {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--lala-night); /* 어두운 배경 */
-  color: var(--lala-white);
+  background-color: #fff;
+  color: #000;
   position: relative;
+}
+
+.dark .chat-container {
+  background-color: #121212;
+  color: #fff;
 }
 
 .chat-messages {
@@ -20,9 +26,14 @@
   left: 0;
   width: 100%;
   padding: 1rem;
-  background-color: rgba(26, 26, 46, 0.9); /* 반투명 라라 나이트 */
-  border-top: 1px solid var(--lala-purple);
-  backdrop-filter: blur(4px); /* 약간의 유리 느낌 */
+  background-color: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid #ccc;
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
+}
+
+.dark .chat-input-wrapper {
+  background-color: rgba(18, 18, 18, 0.9);
+  border-top: 1px solid #333;
 }
